@@ -2,7 +2,7 @@
 
 const  Project = use('App/Models/Project');
 const  Task = use('App/Models/Task');
-const  AuthorizationService = use('App/Services/AuthorizationService');
+const  AuthorizationService = use('App/Service/AuthorizationService');
 
 class TaskController {
   async create ({ auth, request, params }) {
@@ -31,11 +31,12 @@ class TaskController {
     const user = await auth.getUser();
     const { id } = params;
     const task = await Task.find(id);
-    const project = task.project().fetch();
+    const project = await task.project().fetch();
     AuthorizationService.verifyPermission(project, user);
     await task.delete();
     return task;
   }
+
   async update({ auth, request, params }) {
     const user = await auth.getUser();
     const { id } = params;
